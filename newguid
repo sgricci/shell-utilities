@@ -1,0 +1,26 @@
+#!/usr/bin/php
+<?php 
+if (!empty($argv[1])) {
+	echo GUID();
+	exit;
+}
+function GUID()
+{
+	// A more BSON ID like implementation, rather than just MD5'ing uniqid with random entropy.
+	// This will allow the guids to be more sequential to group in data files closely related entities
+	$guid = '';
+	$guid .= substr(dechex(time()),-8);
+	$guid .= substr(dechex(getmyinode()),0,8);
+	$guid .= substr(md5(uniqid(rand())), -16);
+	return str_pad($guid, 32, '0', STR_PAD_LEFT);
+}
+$s = strtoupper(GUID());
+echo strtolower($s)."\n";
+$guidText = sprintf("%s-%s-%s-%s-%s",
+	substr($s, 0, 8),
+	substr($s, 8,4),
+	substr($s, 12, 4),
+	substr($s, 16, 4),
+	substr($s, 20));
+echo $guidText."\n";
+?>
